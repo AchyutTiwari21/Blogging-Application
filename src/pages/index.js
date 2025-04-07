@@ -1,7 +1,7 @@
 import LandingPage from "./Landing-Page";
 import BlogPage from "./Blog-Page";
 import LoginPage from "./Login-Page";
-import SignupPage from "./SignUp-Page";
+import SignupPage from "./Signup-Page";
 import AddPostPage from "./AddPost-Page";
 
 export {
