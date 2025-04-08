@@ -5,29 +5,33 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Logo from "@/components/custom-ui/Logo";
 import { useDispatch } from "react-redux";
-// import authService from "../appwrite/auth";
+import authService from "../backend-api/auth";
 import {useForm} from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 
 function LoginPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const {register, handleSubmit} = useForm();
+    const {register, formState: { errors }, handleSubmit} = useForm();
     const [error, setError] = useState("");
 
     const login = async(data) => {
         setError("");
-        try {
-            // const session = await authService.login(data);
-            // if(session) {
-            //     const userData = await authService.getCurrentUser();
-            //     console.log(userData);
+        // try {
+        //     const session = await authService.login(data);
+        //     if(session) {
+        //         const userData = await authService.getCurrentUser();
+        //         console.log(userData);
                 
-            //     if(userData) dispatch(authLogin({userData}));
-            //     navigate("/");
-            // }
-        } catch (error) {
-            setError(error.message);
-        }
+        //         if(userData) dispatch(authLogin({userData}));
+        //         navigate("/blog");
+        //     }
+        // } catch (error) {
+        //     setError(error.message);
+        // }
+
+        dispatch(authLogin({userData}));
+        navigate("/blog");
     }
 
     return (
@@ -73,6 +77,13 @@ function LoginPage() {
                         }
                     })} 
                     />
+                    <ErrorMessage errors={errors} name="email" />
+
+                    <ErrorMessage
+                    errors={errors}
+                    name="email"
+                    render={({ message }) => <p>{message}</p>}
+                    />
                     </div>
 
                     <div className="w-full">
@@ -91,10 +102,12 @@ function LoginPage() {
                     />
                     </div>
 
-                    <Button
+                    <Button 
                     type="submit"
                     className="w-full cursor-pointer"
-                    >Sign In</Button>
+                    > 
+                    Login
+                    </Button>
                 </div>
             </form>
             </div>

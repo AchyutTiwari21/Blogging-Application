@@ -1,4 +1,5 @@
 import React from "react";
+import BlogLogo from "../../assets/Blog-Logo.png"
 
 function Logo({
     className=''
@@ -6,7 +7,7 @@ function Logo({
     return (
         <div>
             <img 
-            src="" 
+            src={BlogLogo} 
             alt="Logo" 
             className={`${className}`}
             />

@@ -75,38 +75,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Featured Blogs Section */}
-      <div className="bg-muted py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
-            Featured Stories
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <Card key={i} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <img
-                  src={`https://images.unsplash.com/photo-167${i}956227${i}-7d79b6b9c${i}ee?auto=format&fit=crop&w=800&q=80`}
-                  alt={`Featured blog ${i}`}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">
-                    The Art of Storytelling
-                  </h3>
-                  <p className="text-muted-foreground mb-4">
-                    Discover how to craft compelling narratives that captivate your readers...
-                  </p>
-                  <Button variant="ghost" className="group">
-                    Read More
-                    <BookOpen className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* CTA Section */}
       <div className="container mx-auto px-4 py-20">
         <div className="text-center max-w-2xl mx-auto">

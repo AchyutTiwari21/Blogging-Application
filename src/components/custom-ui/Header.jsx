@@ -7,8 +7,9 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-    DropdownMenuSeparator,
-  } from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import Logo from "./Logo";
+
 
 export default function Header() {
     return (
@@ -17,7 +18,7 @@ export default function Header() {
             <div className="container mx-auto px-4 py-4">
             <div className="flex justify-between items-center">
                 <Link to="/blog">
-                <h2 className="text-xl font-bold">BlogApp</h2>
+                  <Logo className="w-18 h-10 md:w-22 md:h-12"/>
                 </Link>
 
                 <div className="flex items-center gap-2 md:gap-5">

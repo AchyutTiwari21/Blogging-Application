@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-// import authService from "../appwrite/auth";
+import authService from "../backend-api/auth";
 import { Link, useNavigate } from "react-router-dom";
 import {login} from "../store/features/authSlice";
 import { Button } from "@/components/ui/button";
@@ -7,30 +7,31 @@ import { Input } from "@/components/ui/input";
 import Logo from "@/components/custom-ui/Logo";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 
 function SignupPage() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const dispatch = useDispatch();
-    const {register, handleSubmit} = useForm();
+    const {register, formState: { errors }, handleSubmit} = useForm();
 
-    const create = async(data) => {
+    const create = async(data) => { 
         setError("");
-        try {
-            // const userData = await authService.createAccount(data);
-            // if(userData) {
-            //     const userData = await authService.getCurrentUser();
-            //     if(userData) dispatch(login(userData));
-            //     navigate("/");
-            // }
-            console.log(data);
-            
-            dispatch(login(data));
-            navigate("/");
-        } catch (error) {
-            setError(error.message);
-        }
+        // try {
+        //     const userData = await authService.createAccount(data);
+        //     if(userData) {
+        //         const userData = await authService.getCurrentUser();
+        //         if(userData) dispatch(login(userData));
+        //         navigate("/blog");
+        //     }
+        // } catch (error) {
+        //     setError(error.message);
+        // }
+
+        dispatch(login(userData));
+        navigate("/blog");
     }
+
     return (
         <div className="h-auto w-full bg-background flex justify-center px-5 my-10">
             <div className="mx-auto w-full max-w-lg bg-card text-card-foreground rounded-xl p-10 border border-black/10">
@@ -88,6 +89,14 @@ function SignupPage() {
                             }
                         })} 
                         />
+
+                        <ErrorMessage errors={errors} name="email" />
+
+                        <ErrorMessage
+                        errors={errors}
+                        name="email"
+                        render={({ message }) => <p>{message}</p>}
+                        />
                         </div>
 
                         <div className="w-full">
@@ -115,12 +124,27 @@ function SignupPage() {
                           },
                         })}
                         />
+
+                        <ErrorMessage errors={errors} name="password" />
+                        <ErrorMessage
+                            errors={errors}
+                            name="password"
+                            render={({ messages }) =>
+                            messages &&
+                            Object.entries(messages).map(([type, message]) => (
+                                <p key={type}>{message}</p>
+                            ))
+                            }
+                        />
+
                         </div>
 
                         <Button 
                         type="submit"
                         className="w-full cursor-pointer"
-                        > Create Account</Button>
+                        > 
+                        Create Account
+                        </Button>
                     </div>
                 </form>
             </div>

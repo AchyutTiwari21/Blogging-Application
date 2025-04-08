@@ -12,9 +12,11 @@ import {
   CardContent,
   CardFooter,
 } from '@/components/ui/card';
-// import poems from '../database/poems';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import config from '@/config/config';
+import configService from "../backend-api/configuration";
+import { useNavigate } from 'react-router-dom';
+import { addPost } from '@/store/features/postSlice';
 
 function AddPostPage() {
   const { register, handleSubmit, setValue, watch } = useForm({
@@ -25,40 +27,46 @@ function AddPostPage() {
       image: null
     }
   });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const userData = useSelector((state) => state.auth.userData);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log(data);
 
-    // poems.push({
-    //   id: Number(Math.random()*100),
-    //   title: data.title,
-    //   excerpt: data.content,
-    //   imageUrl: "https://images.unsplash.com/photo-1518050947974-4be8c7469f0c?auto=format&fit=crop&q=80&w=800",
-    //   author:{
-    //     author: userData.image,
-    //     avatar: "https://images.unsplash.com/photo-1496302662116-35cc4f36df92?auto=format&fit=crop&q=80&w=100",
-    //   },
-    //   likes: 128,
-    //     comments: [
-    //         {
-    //             id: Number(Math.random()*100),
-    //             content: "This poem is so beautiful!",
-    //         },
-    //         {
-    //             id: Number(Math.random()*100),
-    //             content: "This poem is so awesome!",
-    //         }
-    //     ],
-    // })
+    try {
+      // const post = await configService.createPost({...data, userId: userData.id});
+      // console.log(post);   
+      // if(post) {
+      //   dispatch(addPost(post));
+      //   navigate("/blog")
+        
+      // } else {
+      //   throw new Error("Unable to upload post.")
+      // }
+
+      console.log(post);
+      navigate("/blog");
+      
+    } catch (error) {
+      console.log("Post upload error: ", error.message); 
+    }
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setValue('image', file);
-    }
+  const handleImageChange = async (e) => {
+    // const file = e.target.files[0];
+    // if(!file) {
+    //   return;
+    // }
+    // try {
+    //   const featuredImage = await configService.uploadImage(file);
+    //   if (featruedImage) {
+    //     setValue('featruedImage', featuredImage);
+    //   } 
+    // } catch (error) {
+    //   console.log("Upload Image Error: ", error.message);
+    // }
   };
 
   return (
