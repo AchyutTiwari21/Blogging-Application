@@ -5,7 +5,7 @@ import App from './App.jsx'
 import { Provider } from 'react-redux'
 import store from './store/store.js'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { LandingPage, BlogPage, LoginPage, SignupPage, AddPostPage } from './pages'
+import { LandingPage, BlogPage, LoginPage, SignupPage, AddPostPage, UserProfilePage } from './pages'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: '/add-post',
         element: <AddPostPage />,
+      },
+      {
+        path: '/user-profile',
+        element: <UserProfilePage />
       }
     ]
   }

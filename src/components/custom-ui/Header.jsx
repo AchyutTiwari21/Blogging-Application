@@ -9,9 +9,26 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Logo from "./Logo";
+import { useSelector, useDispatch } from "react-redux";
+import authService from "@/backend-api/auth";
+import { logout } from "@/store/features/authSlice";
+import AvatarImageUser from "./UserProfile-Avatar";
 
 
 export default function Header() {
+    const dispatch = useDispatch();
+    const status = useSelector((state) => state.auth.status);
+
+    const handleLogout = async (e) => {
+        // try {
+        //     const isLogout = await authService.logout();
+        //     if(isLogout) dispatch(logout());
+        // } catch (error) {
+        //     console.log("Error while logging out!", error.message);
+            
+        // }
+    } 
+
     return (
         <header className="bg-background text-foreground">
             <nav className="border-b">
@@ -24,6 +41,16 @@ export default function Header() {
                 <div className="flex items-center gap-2 md:gap-5">
 
                 <div className="hidden md:flex items-center justify-center gap-5">
+
+                {status ? ( <Button
+                variant="outline"
+                size="lg"
+                className="cursor-pointer"
+                onClick={handleLogout}
+                >
+                    Logout
+                </Button>
+                ) : (
                 <Link to="/login">
                 <Button
                 variant="outline"
@@ -33,6 +60,8 @@ export default function Header() {
                     Login
                 </Button>
                 </Link>
+                )
+                }
 
                 <Link to="/add-post">
                 <Button
@@ -49,6 +78,10 @@ export default function Header() {
                 </div>
 
                 <div className="flex items-center gap-5 md:hidden">
+                
+                {status ? (
+                    <AvatarImageUser />
+                ) : (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button 
@@ -63,17 +96,22 @@ export default function Header() {
                             <Link to="/login">Login</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            <Link to="/add-post">Add Post</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                        <Link to="/signup">Signup</Link>
+                            <Link to="/signup">Signup</Link>
                         </DropdownMenuItem>
                         </DropdownMenuContent>
 
                     </DropdownMenu>
+                )}
+            
+                    
+                </div>
+
+                <div className="hidden md:flex items-center justify-center">
+                {status && <AvatarImageUser />}
                 </div>
 
                 </div>
+
             </div>
             </div>
             </nav>
