@@ -17,19 +17,16 @@ function SignupPage() {
 
     const create = async(data) => { 
         setError("");
-        // try {
-        //     const userData = await authService.createAccount(data);
-        //     if(userData) {
-        //         const userData = await authService.getCurrentUser();
-        //         if(userData) dispatch(login(userData));
-        //         navigate("/blog");
-        //     }
-        // } catch (error) {
-        //     setError(error.message);
-        // }
-
-        dispatch(login(userData));
-        navigate("/blog");
+        try {
+            const isUserCreated = await authService.createAccount(data);
+            if(isUserCreated) {
+                const userData = await authService.getCurrentUser();
+                if(userData) dispatch(login(userData));
+                navigate("/blog");
+            }
+        } catch (error) {
+            setError(error.message);
+        }
     }
 
     return (

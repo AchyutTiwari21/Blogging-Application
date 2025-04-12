@@ -9,21 +9,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/features/authSlice";
+import authService from "@/backend-api/auth";
 
 
 export default function AvatarImageUser() {
     const dispatch = useDispatch();
-    const status = useSelector((state) => state.auth.status);
 
     const handleLogout = async (e) => {
-        // try {
-        //     const isLogout = await authService.logout();
-        //     if(isLogout) dispatch(logout());
-        // } catch (error) {
-        //     console.log("Error while logging out!", error.message);
+        try {
+            const isLogout = await authService.logout();
+            if(isLogout) dispatch(logout());
+        } catch (error) {
+            console.log("Error while logging out!", error.message);
             
-        // }
+        }
     } 
 
     return (
@@ -42,11 +43,14 @@ export default function AvatarImageUser() {
             <DropdownMenuLabel>
             <Link to='/user-profile'>My Account</Link>
             </DropdownMenuLabel>
+            <DropdownMenuItem>
+                <Link to='/add-post'>Add Post</Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
             onClick={handleLogout}
             >
-                Log out
+                Logout
             </DropdownMenuItem>
         </DropdownMenuContent>
         </DropdownMenu>

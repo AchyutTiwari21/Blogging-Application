@@ -20,13 +20,13 @@ export default function Header() {
     const status = useSelector((state) => state.auth.status);
 
     const handleLogout = async (e) => {
-        // try {
-        //     const isLogout = await authService.logout();
-        //     if(isLogout) dispatch(logout());
-        // } catch (error) {
-        //     console.log("Error while logging out!", error.message);
+        try {
+            const isLogout = await authService.logout();
+            if(isLogout) dispatch(logout());
+        } catch (error) {
+            console.log("Error while logging out!", error.message);
             
-        // }
+        }
     } 
 
     return (
@@ -63,6 +63,7 @@ export default function Header() {
                 )
                 }
 
+                {status &&
                 <Link to="/add-post">
                 <Button
                 size="lg"
@@ -71,6 +72,7 @@ export default function Header() {
                     Add Post
                 </Button>
                 </Link>
+}
                 </div>
 
                 <div className="flex items-center justify-center">

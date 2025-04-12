@@ -17,21 +17,17 @@ function LoginPage() {
 
     const login = async(data) => {
         setError("");
-        // try {
-        //     const session = await authService.login(data);
-        //     if(session) {
-        //         const userData = await authService.getCurrentUser();
-        //         console.log(userData);
+        try {
+            const session = await authService.login(data);
+            if(session) {
+                const userData = await authService.getCurrentUser();
                 
-        //         if(userData) dispatch(authLogin({userData}));
-        //         navigate("/blog");
-        //     }
-        // } catch (error) {
-        //     setError(error.message);
-        // }
-
-        dispatch(authLogin({userData}));
-        navigate("/blog");
+                if(userData) dispatch(authLogin(userData));
+                navigate("/blog");
+            }
+        } catch (error) {
+            setError(error.message);
+        }
     }
 
     return (
