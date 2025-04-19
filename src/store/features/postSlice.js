@@ -25,22 +25,25 @@ const postSlice = createSlice({
         updatePost: (state, action) => {
             state.posts = state.posts.map(post => {
                 if (post.Id === action.payload.Id) {
-                    post = { Title: action.payload.Title, Description: action.payload.Description, FeaturedImage: action.payload.FeaturedImage };
+                    return { Title: action.payload.Title, Description: action.payload.Description, FeaturedImage: action.payload.FeaturedImage };
                 }
+                return post;
             })
         },
         likePost: (state, action) => {
             state.posts = state.posts.map(post => {
                 if(post.Id === action.payload.Id) {
-                    post = {...post, HasLiked: action.payload.HasLiked}
+                    return {...post, HasLiked: action.payload.HasLiked}
                 }
+                return post;
             })
         },
         addComment: (state, action) => {
             state.posts = state.posts.map(post => {
                 if (post.Id === action.payload.Id) {
-                    post = { ...post, Comments : [...post.Comments, action.payload.Comment] };
+                    return { ...post, Comments : [...post.Comments, action.payload] };
                 }
+                return post;
             })
         }
     }

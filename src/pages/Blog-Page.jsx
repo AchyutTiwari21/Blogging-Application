@@ -1,5 +1,5 @@
 import { BlogCard } from "@/components/custom-ui/Blog-Card";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import service from "@/backend-api/configuration";
 import { useDispatch, useSelector } from "react-redux";
 import { initPosts } from "../store/features/postSlice";
@@ -78,18 +78,33 @@ import { initPosts } from "../store/features/postSlice";
 
 function BlogPage() {
   const dispatch = useDispatch();
-
-  useEffect(async () => {
-    try {
-      const blogPosts = await service.getPosts();
-      dispatch(initPosts(blogPosts));
-    } catch (error) {
-      console.log(error.message || "Error while fetching post.");
-      return;
-    }
-  }, []);
+  const [loading, setLoading] = useState(true);
 
   const blogPosts = useSelector(state => state.post.posts);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const blogs = await service.getPosts();
+        dispatch(initPosts(blogs));
+      } catch (error) {
+        console.log(error.message || "Error while fetching post.");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [dispatch]);
+
+  if(loading) {
+    return (
+      <div className="w-full min-h-screen flex justify-center items-center">
+        Loading...
+        {
+          console.log("Inside Loading...", blogPosts)
+        }
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,14 +112,23 @@ function BlogPage() {
       {/* Blog Feed Section */}
       <div className="container mx-auto px-4 py-10">
         <div className="flex flex-col items-center gap-8">
-          {blogPosts.map((blog) => (
-            <BlogCard key={blog.Id} {...blog} />
-          ))}
+        {Array.isArray(blogPosts) && blogPosts.length > 0 ? (
+          blogPosts
+            .filter((blog) => blog && typeof blog === 'object' && blog.Id !== undefined)
+            .map((blog) => (
+              <BlogCard key={blog.Id} {...blog} />
+            ))
+        ) : (
+          <p>No blog posts found.</p>
+        )}
         </div>
       </div>
+      {
+          console.log("Inside Blog Page...", blogPosts)
+      }
       
     </div>
   );
 }
 
-export default BlogPage;;
+export default BlogPage;

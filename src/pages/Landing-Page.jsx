@@ -21,13 +21,13 @@ export default function LandingPage() {
             </p>
             <div className="flex gap-4 justify-center">
 
-              <Link to="/blog">"
+              <Link to="/blog">
               <Button 
               size="lg"
               className="cursor-pointer"
               >
                 Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               </Link>
 

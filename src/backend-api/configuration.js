@@ -78,6 +78,8 @@ export class Service{
             if(!response.ok) {
                 throw new Error(data.error || 'Error while fetching post.');
             } else {
+                console.log(data);
+                
                 return data.posts;
             }
         } catch (error) {
@@ -106,7 +108,7 @@ export class Service{
         }
     }
 
-    async likePost(id) {
+    async likePost({id}) {
         try {
             const response = await fetch(`http://localhost/blog-api/like-post/${id}`, {
                 method: 'POST',
@@ -126,7 +128,7 @@ export class Service{
         }
     }
 
-    async unlikePost(id) {
+    async unlikePost({id}) {
         try {
             const response = await fetch(`http://localhost/blog-api/unlike-post/${id}`, {
                 method: 'POST',

@@ -72,7 +72,7 @@ export default function Header() {
                     Add Post
                 </Button>
                 </Link>
-}
+                }
                 </div>
 
                 <div className="flex items-center justify-center">

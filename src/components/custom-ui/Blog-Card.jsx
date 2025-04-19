@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 // import { useToast } from "@/hooks/use-toast";
 import service from "@/backend-api/configuration";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addComment, likePost } from "@/store/features/postSlice";
 import parse from "html-react-parser";
 
@@ -54,10 +54,12 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
 
   const dispatch = useDispatch();
 
+  const userData = useSelector((state) => state.auth.userData)
+
   const handleLike = async () => {
     if (liked) {
       try {
-        const isUnliked = await service.unlikePost(Id);
+        const isUnliked = await service.unlikePost({id: Id});
         if(isUnliked) {
           setLikesCount((prev) => prev-1);
           dispatch(likePost({Id, HasLiked: !liked}))
@@ -71,7 +73,7 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
     
     else {
       try {
-        const isLiked = await service.likePost(Id);
+        const isLiked = await service.likePost({id: Id});
         if(isLiked) {
           setLikesCount((prev) => prev+1);
           dispatch(likePost({Id, HasLiked: !liked}));
@@ -88,10 +90,10 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
   const handleAddComment = async () => {
     if (newComment.trim()) {
       try {
-        const isComment = await service.commentPost({id, comment: newComment});
+        const isComment = await service.commentPost({id: Id, comment: newComment});
         if(isComment) {
           dispatch(addComment({Id, Comment: newComment}));
-          setComments(prev => [...prev, comment]);
+          setComments(prev => [...prev, newComment]);
           setNewComment("");
         }
         else {
