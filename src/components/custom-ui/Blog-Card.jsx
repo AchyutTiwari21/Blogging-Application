@@ -35,47 +35,77 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 // import { useToast } from "@/hooks/use-toast";
+import service from "@/backend-api/configuration";
+import { useDispatch } from "react-redux";
+import { addComment, likePost } from "@/store/features/postSlice";
 
 
-export function BlogCard({ author, content, timestamp, stats, initialComments = [] }) {
-  const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(stats.likes);
+export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation, Description, FeaturedImage, Likes, Comments = [], HasLiked}) {
+  const [liked, setLiked] = useState(HasLiked);
+  const [likesCount, setLikesCount] = useState(Likes);
   const [isCommentOpen, setIsCommentOpen] = useState(false);
-  const [comments, setComments] = useState(initialComments);
+  const [comments, setComments] = useState(Comments);
   const [newComment, setNewComment] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isFullPostOpen, setIsFullPostOpen] = useState(false);
   // const { toast } = useToast();
 
-  const handleLike = () => {
+  const dispatch = useDispatch();
+
+  const handleLike = async () => {
     if (liked) {
-      setLikesCount(prev => prev - 1);
-    } else {
-      setLikesCount(prev => prev + 1);
+      try {
+        const isUnliked = await service.unlikePost(Id);
+        if(isUnliked) {
+          setLikesCount((prev) => prev-1);
+          dispatch(likePost({Id, HasLiked: !liked}))
+        }
+        else throw new Error("Unable to unlike Post")
+      } catch (error) {
+        console.log(error.message || "Unable to unlike the post.");
+        return;
+      }
+    } 
+    
+    else {
+      try {
+        const isLiked = await service.likePost(Id);
+        if(isLiked) {
+          setLikesCount((prev) => prev+1);
+          dispatch(likePost({Id, HasLiked: !liked}));
+        }
+        else throw new Error("Unable to like Post")
+      } catch (error) {
+        console.log(error.message || "Unable to like the post.");
+        return;
+      }
     }
     setLiked(!liked);
   };
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim()) {
-      const comment = {
-        id: Date.now().toString(),
-        author: {
-          name: "Current User",
-          image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80",
-        },
-        text: newComment,
-        timestamp: "Just now",
-      };
-      setComments(prev => [...prev, comment]);
-      setNewComment("");
+      try {
+        const isComment = await service.commentPost({id, comment: newComment});
+        if(isComment) {
+          dispatch(addComment({Id, Comment: newComment}));
+          setComments(prev => [...prev, comment]);
+          setNewComment("");
+        }
+        else {
+          throw new Error("Error while Adding Comment.")
+        }
+      } catch (error) {
+        console.log(error.message || "Error while Commenting Post.");
+        return;
+      }
     }
   };
 
   const handleShare = async (platform) => {
     const url = window.location.href;
-    const text = `Check out this amazing blog post: ${content.text.substring(0, 50)}...`;
+    const text = `Check out this amazing blog post: ${Description.substring(0, 50)}...`;
     
     let shareUrl = '';
     switch (platform) {
@@ -96,25 +126,24 @@ export function BlogCard({ author, content, timestamp, stats, initialComments = 
     setIsShareOpen(false);
   };
 
-  const truncatedText = content.text.slice(0, 280);
-  const hasMoreContent = content.text.length > 280;
+  const truncatedText = Description.slice(0, 280);
+  const hasMoreContent = Description.length > 280;
 
   return (
     <Card className="max-w-2xl w-full">
       <CardHeader className="flex justify-between space-y-0">
         <div className="flex gap-3">
           <Avatar className="h-12 w-12">
-            <AvatarImage src={author.image} alt={author.name} />
+            <AvatarImage src={AuthorProfileImage} alt={AuthorName} />
             <AvatarFallback>
               <UserRound className="h-6 w-6" />
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <p className="font-semibold hover:underline cursor-pointer">
-              {author.name}
+              {AuthorName}
             </p>
-            <p className="text-sm text-muted-foreground">{author.role}</p>
-            <p className="text-sm text-muted-foreground">{timestamp}</p>
+            <p className="text-sm text-muted-foreground">{AuthorDesignation}</p>
           </div>
         </div>
 
@@ -139,7 +168,7 @@ export function BlogCard({ author, content, timestamp, stats, initialComments = 
       <CardContent className="space-y-4">
         <div className="relative">
           <p className="text-sm">
-            {isExpanded ? content.text : truncatedText}
+            {isExpanded ? Description : truncatedText}
             {hasMoreContent && !isExpanded && "..."}
           </p>
           {hasMoreContent && (
@@ -160,17 +189,14 @@ export function BlogCard({ author, content, timestamp, stats, initialComments = 
             </Button>
           )}
         </div>
-        {content.images && content.images.length > 0 && (
-          <div className="grid grid-cols-2 gap-2">
-            {content.images.map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Blog content ${index + 1}`}
-                className="rounded-lg w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => setIsFullPostOpen(true)}
-              />
-            ))}
+        {FeaturedImage && (
+          <div>
+            <img
+              src={FeaturedImage}
+              alt={`Blog content id: ${Id}`}
+              className="rounded-lg w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+              onClick={() => setIsFullPostOpen(true)}
+            />
           </div>
         )}
       </CardContent>
@@ -180,7 +206,7 @@ export function BlogCard({ author, content, timestamp, stats, initialComments = 
           <Heart className={`h-4 w-4 ${liked ? "text-red-500 fill-red-500" : "text-muted-foreground"}`} />
           <span>{likesCount} likes</span>
           <span>•</span>
-          <span>{comments.length} comments</span>
+          <span>{Comments.length} comments</span>
         </div>
         
         <Separator />
@@ -250,19 +276,18 @@ export function BlogCard({ author, content, timestamp, stats, initialComments = 
           </DialogHeader>
           <div className="space-y-4">
             {comments.map((comment) => (
-              <div key={comment.id} className="flex gap-3">
+              <div key={comment.Id} className="flex gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={comment.author.image} alt={comment.author.name} />
+                  <AvatarImage src={comment.CommenterProfileImage} alt={comment.CommenterName} />
                   <AvatarFallback>
                     <UserRound className="h-4 w-4" />
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 bg-muted p-3 rounded-lg">
                   <div className="flex justify-between items-start">
-                    <p className="font-semibold text-sm">{comment.author.name}</p>
-                    <span className="text-xs text-muted-foreground">{comment.timestamp}</span>
+                    <p className="font-semibold text-sm">{comment.CommenterName}</p>
                   </div>
-                  <p className="text-sm mt-1">{comment.text}</p>
+                  <p className="text-sm mt-1">{comment.Comment}</p>
                 </div>
               </div>
             ))}
@@ -291,29 +316,24 @@ export function BlogCard({ author, content, timestamp, stats, initialComments = 
           <DialogHeader>
             <div className="flex items-center gap-3 mb-4">
               <Avatar className="h-10 w-10">
-                <AvatarImage src={author.image} alt={author.name} />
+                <AvatarImage src={AuthorProfileImage} alt={AuthorName} />
                 <AvatarFallback><UserRound /></AvatarFallback>
               </Avatar>
               <div>
-                <DialogTitle>{author.name}</DialogTitle>
-                <p className="text-sm text-muted-foreground">{author.role}</p>
+                <DialogTitle>{AuthorName}</DialogTitle>
+                <p className="text-sm text-muted-foreground">{AuthorDesignation}</p>
               </div>
             </div>
           </DialogHeader>
           <div className="space-y-6">
-            <p className="text-base leading-relaxed">{content.text}</p>
-            {content.images && (
-              <div className="grid gap-4">
-                {content.images.map((image, index) => (
+            <p className="text-base leading-relaxed">{Description}</p>
+              <div>
                   <img
-                    key={index}
-                    src={image}
-                    alt={`Blog content ${index + 1}`}
+                    src={FeaturedImage}
+                    alt={`Blog content id: ${Id}`}
                     className="rounded-lg w-full object-cover"
                   />
-                ))}
               </div>
-            )}
           </div>
         </DialogContent>
       </Dialog>

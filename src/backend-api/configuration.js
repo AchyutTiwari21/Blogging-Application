@@ -1,16 +1,46 @@
 export class Service{
 
-    async createPost({title, content, featuredImage, status=true, userId}) {
+    async createPost({title, description, featuredImage}) {
         try {
-            // backend api call to create post
+            const response = await fetch("http://localhost/blog-api/create-post", {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({title, description, featuredImage})
+            });
+    
+            const data = await response.json();
+    
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while creating post.');
+            } else {
+                return data.post;
+            } 
         } catch (error) {
             console.log("Backend api service :: createPost :: error ", error);
         }
     }
 
-    async updatePost(id, {title, content, featuredImage, status=true}) {
+    async updatePost({id, title, description, featuredImage}) {
         try {
-            // backend api call to update post
+            const response = await fetch(`http://localhost/blog-api/update-post/${id}`, {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({title, description, featuredImage})
+            });
+    
+            const data = await response.json();
+    
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while updating post.');
+            } else {
+                return true;
+            } 
         } catch(err) {
             console.log("Backend api service :: updatePost :: error ", error);
         }
@@ -18,53 +48,106 @@ export class Service{
 
     async deletePost(id) {
         try {
-            // backend api call to delete post
+            const response = await fetch(`http://localhost/blog-api/delete-post/${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+    
+            const data = await response.json();
+    
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while deleting post.');
+            } else {
+                return true;
+            }
         } catch(err) {
             console.log("Backend api service :: deletePost :: error ", error);
             return false;
         }
     }
 
-    async getPost(id) {
-        try {
-            // backend api call to get post
-        } catch (err) {
-            console.log("Backend api service :: getPost :: error ", error);
-            return false;
-        }
-    }
-
     async getPosts() {
         try {
-            // backend api call to get posts
+            const response = await fetch("http://localhost/blog-api/posts", {
+                method: 'GET',
+                credentials: 'include'
+            });
+    
+            const data = await response.json();
+    
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while fetching post.');
+            } else {
+                return data.posts;
+            }
         } catch (error) {
             console.log("Backend api service :: getPosts :: error ", error);
             return false;
         }
     }
 
-    // file upload service
-
-    async uploadImage(file) {
+    async likePost(id) {
         try {
-            // image upload to storage
+            const response = await fetch(`http://localhost/blog-api/like-post/${id}`, {
+                method: 'POST',
+                credentials: 'include',
+            });
+    
+            const data = await response.json();
+    
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while liking post.');
+            } else {
+                return true;
+            }
         } catch (error) {
-            console.log("Backend api service :: uploadImage :: error ", error);
+            console.log("Backend api service :: likePosts :: error ", error);
             return false;
         }
     }
 
-    async deleteImage(fileId) {
+    async unlikePost(id) {
         try {
-            // image deletion from storage
+            const response = await fetch(`http://localhost/blog-api/unlike-post/${id}`, {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            const data = await response.json();
+
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while unliking the post.');
+            } else {
+                return true;
+            }
         } catch (error) {
-            console.log("Backend api service :: deleteImage :: error ", error);
+            console.log("Backend api service :: unlikePosts :: error ", error);
             return false;
         }
     }
 
-    getImagePreview(fileId) {
-        // get image url
+    async commentPost({id, comment}) {
+        try {
+            const response = await fetch(`http://localhost/blog-api/comment-post/${id}`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({comment})
+            });
+    
+            const data = await response.json();
+    
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while commenting post.');
+            } else {
+                return true;
+            }
+        } catch (error) {
+            console.log("Backend api service :: commentPost :: error ", error);
+            return false;
+        }
     }
 }
 

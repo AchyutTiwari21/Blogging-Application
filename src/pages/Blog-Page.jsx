@@ -1,4 +1,10 @@
 import { BlogCard } from "@/components/custom-ui/Blog-Card";
+import { useEffect } from "react";
+import service from "@/backend-api/configuration";
+import { useSelector } from "react-redux";
+import service from "./backend-api/configuration";
+import { useDispatch, useSelector } from "react-redux";
+import { initPosts } from "../store/features/postSlice";
 
 const sampleBlogs = [
   {
@@ -73,14 +79,28 @@ const sampleBlogs = [
 ];
 
 function BlogPage() {
+  const dispatch = useDispatch();
+
+  useEffect(async () => {
+    try {
+      const blogPosts = await service.getPosts();
+      dispatch(initPosts(blogPosts));
+    } catch (error) {
+      console.log(error.message || "Error while fetching post.");
+      return;
+    }
+  }, []);
+
+  const blogPosts = useSelector(state => state.post.posts);
+
   return (
     <div className="min-h-screen bg-background">
 
       {/* Blog Feed Section */}
       <div className="container mx-auto px-4 py-10">
         <div className="flex flex-col items-center gap-8">
-          {sampleBlogs.map((blog, index) => (
-            <BlogCard key={index} {...blog} />
+          {blogPosts.map((blog) => (
+            <BlogCard key={blog.Id} {...blog} />
           ))}
         </div>
       </div>

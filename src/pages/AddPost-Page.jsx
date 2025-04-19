@@ -17,6 +17,7 @@ import config from '@/config/config';
 import configService from "../backend-api/configuration";
 import { useNavigate } from 'react-router-dom';
 import { addPost } from '@/store/features/postSlice';
+import ImageUploader from '@/backend-api/fileUpload';
 
 function AddPostPage() {
   const { register, handleSubmit, setValue, watch } = useForm({
@@ -24,7 +25,8 @@ function AddPostPage() {
       title: '',
       content: '',
       category: '',
-      image: null
+      image: null,
+      featuredImage: null
     }
   });
   const dispatch = useDispatch();
@@ -33,40 +35,32 @@ function AddPostPage() {
   const userData = useSelector((state) => state.auth.userData);
 
   const onSubmit = async (data) => {
-    console.log(data);
-
     try {
-      // const post = await configService.createPost({...data, userId: userData.id});
-      // console.log(post);   
-      // if(post) {
-      //   dispatch(addPost(post));
-      //   navigate("/blog")
-        
-      // } else {
-      //   throw new Error("Unable to upload post.")
-      // }
-
-      console.log(post);
-      navigate("/blog");
-      
+      const post = await configService.createPost({...data, userId: userData.id});
+      if(post) {
+        dispatch(addPost(post));
+        navigate("/blog");
+      } else {
+        throw new Error("Unable to upload post.");
+      }
     } catch (error) {
       console.log("Post upload error: ", error.message); 
     }
   };
 
   const handleImageChange = async (e) => {
-    // const file = e.target.files[0];
-    // if(!file) {
-    //   return;
-    // }
-    // try {
-    //   const featuredImage = await configService.uploadImage(file);
-    //   if (featruedImage) {
-    //     setValue('featruedImage', featuredImage);
-    //   } 
-    // } catch (error) {
-    //   console.log("Upload Image Error: ", error.message);
-    // }
+    const file = e.target.files[0];
+    if(!file) {
+      return;
+    }
+    try {
+      const imageUrl = await ImageUploader(file);
+      if (imageUrl) {
+        setValue('featuredImage', imageUrl);
+      } 
+    } catch (error) {
+      console.log("Upload Image Error: ", error.message);
+    }
   };
 
   return (
@@ -119,7 +113,7 @@ function AddPostPage() {
                       'removeformat | help',
                     content_style: 'body { font-family: "Noto Sans Devanagari", sans-serif; font-size: 16px; }'
                   }}
-                  onEditorChange={(content) => setValue('content', content)}
+                  onEditorChange={(description) => setValue('description', description)}
                 />
               </div>
 

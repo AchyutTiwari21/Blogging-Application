@@ -1,4 +1,6 @@
+import { Description } from "@radix-ui/react-dialog";
 import { createSlice } from "@reduxjs/toolkit";
+import { act } from "react";
 
 const initialState = {
     posts: []
@@ -15,42 +17,35 @@ const postSlice = createSlice({
             state.posts = [];
         },
         addPost: (state, action) => {
-            state.posts.push(action.payload);
+            state.posts = [action.payload, ...state.posts]
         },
         removePost: (state, action) => {
-            state.posts = state.posts.filter(post => post.id !== action.payload.id);
+            state.posts = state.posts.filter(post => post.Id !== action.payload.Id);
         },
         updatePost: (state, action) => {
             state.posts = state.posts.map(post => {
-                if (post.id === action.payload.id) {
-                    post = { ...post, text : action.payload.text };
+                if (post.Id === action.payload.Id) {
+                    post = { ...post, Description : action.payload.Description };
                 }
             })
         },
         likePost: (state, action) => {
             state.posts = state.posts.map(post => {
-                if (post.id === action.payload.id) {
-                    post = { ...post, like : action.payload.like };
+                if(post.Id === action.payload.Id) {
+                    post = {...post, HasLiked: action.payload.HasLiked}
                 }
             })
         },
         addComment: (state, action) => {
             state.posts = state.posts.map(post => {
-                if (post.id === action.payload.id) {
-                    post = { ...post, comments : [...post.comments, action.payload.comment] };
+                if (post.Id === action.payload.Id) {
+                    post = { ...post, Comments : [...post.Comments, action.payload.Comment] };
                 }
             })
-        },
-        removeComment: (state, action) => {
-            state.posts = state.posts.map(post => {
-                if (post.id === action.payload.id) {
-                    post = { ...post, comments : post.comments.filter(comment => comment.id !== action.payload.commentId) };
-                }
-            })
-        },
+        }
     }
 });
 
-export const { initPosts, clearPosts, addPost, removePost, updatePost, likePost, addComment, removeComment } = postSlice.actions;
+export const { initPosts, clearPosts, addPost, removePost, updatePost, likePost, addComment} = postSlice.actions;
 
 export default postSlice.reducer;

@@ -4,6 +4,7 @@ import Header from "./components/custom-ui/Header";
 import Footer from "./components/custom-ui/Footer";
 
 function App() {
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
     <Header />
