@@ -25,7 +25,7 @@ const postSlice = createSlice({
         updatePost: (state, action) => {
             state.posts = state.posts.map(post => {
                 if (post.Id === action.payload.Id) {
-                    post = { ...post, Description : action.payload.Description };
+                    post = { Title: action.payload.Title, Description: action.payload.Description, FeaturedImage: action.payload.FeaturedImage };
                 }
             })
         },

@@ -81,7 +81,27 @@ export class Service{
                 return data.posts;
             }
         } catch (error) {
-            console.log("Backend api service :: getPosts :: error ", error);
+            console.log("Backend api service :: getPosts :: error ", error.message);
+            return false;
+        }
+    }
+
+    async getSinglePost(id) {
+        try {
+            const response = await fetch(`http://localhost/blog-api/post/${id}`, {
+                method: 'GET',
+                credentials: 'include'
+            });
+    
+            const data = await response.json();
+    
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while fetching post.');
+            } else {
+                return data;
+            }
+        } catch (error) {
+            console.log("Backend api service :: getSinglePost :: error ", error.message);
             return false;
         }
     }

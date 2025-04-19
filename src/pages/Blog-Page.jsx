@@ -1,8 +1,6 @@
 import { BlogCard } from "@/components/custom-ui/Blog-Card";
 import { useEffect } from "react";
 import service from "@/backend-api/configuration";
-import { useSelector } from "react-redux";
-import service from "./backend-api/configuration";
 import { useDispatch, useSelector } from "react-redux";
 import { initPosts } from "../store/features/postSlice";
 

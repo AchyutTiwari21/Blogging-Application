@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import store from './store/store.js'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { LandingPage, BlogPage, LoginPage, SignupPage, AddPostPage, UserProfilePage } from './pages'
+import EditPostPage from './pages/EditPost-Page'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: '/add-post',
         element: <AddPostPage />,
+      },
+      {
+        path: '/edit-post/:Id',
+        element: <EditPostPage/>
       },
       {
         path: '/user-profile',

@@ -38,6 +38,7 @@ import {
 import service from "@/backend-api/configuration";
 import { useDispatch } from "react-redux";
 import { addComment, likePost } from "@/store/features/postSlice";
+import parse from "html-react-parser";
 
 
 export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation, Description, FeaturedImage, Likes, Comments = [], HasLiked}) {
@@ -126,8 +127,9 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
     setIsShareOpen(false);
   };
 
-  const truncatedText = Description.slice(0, 280);
-  const hasMoreContent = Description.length > 280;
+  const content = parse(Description);
+  const truncatedText = content.slice(0, 280);
+  const hasMoreContent = content.length > 280;
 
   return (
     <Card className="max-w-2xl w-full">
@@ -168,7 +170,7 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
       <CardContent className="space-y-4">
         <div className="relative">
           <p className="text-sm">
-            {isExpanded ? Description : truncatedText}
+            {isExpanded ? content : truncatedText}
             {hasMoreContent && !isExpanded && "..."}
           </p>
           {hasMoreContent && (
@@ -326,7 +328,7 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
             </div>
           </DialogHeader>
           <div className="space-y-6">
-            <p className="text-base leading-relaxed">{Description}</p>
+            <p className="text-base leading-relaxed">{content}</p>
               <div>
                   <img
                     src={FeaturedImage}
