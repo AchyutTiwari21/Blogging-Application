@@ -329,13 +329,13 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
           </DialogHeader>
           <div className="space-y-6">
             <p className="text-base leading-relaxed">{content}</p>
-              <div>
+              {FeaturedImage && <div>
                   <img
                     src={FeaturedImage}
                     alt={`Blog content id: ${Id}`}
                     className="rounded-lg w-full object-cover"
                   />
-              </div>
+              </div>}
           </div>
         </DialogContent>
       </Dialog>
