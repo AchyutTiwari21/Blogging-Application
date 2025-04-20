@@ -37,7 +37,7 @@ import {
 // import { useToast } from "@/hooks/use-toast";
 import service from "@/backend-api/configuration";
 import { useDispatch, useSelector } from "react-redux";
-import { addComment, likePost } from "@/store/features/postSlice";
+import { likePost } from "@/store/features/postSlice";
 import parse from "html-react-parser";
 
 
@@ -54,7 +54,9 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
 
   const dispatch = useDispatch();
 
-  const userData = useSelector((state) => state.auth.userData)
+  const userData = useSelector((state) => state.auth.userData);
+  console.log(userData);
+  
 
   const handleLike = async () => {
     if (liked) {
@@ -90,10 +92,9 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
   const handleAddComment = async () => {
     if (newComment.trim()) {
       try {
-        const isComment = await service.commentPost({id: Id, comment: newComment});
-        if(isComment) {
-          dispatch(addComment({Id, Comment: newComment}));
-          setComments(prev => [...prev, newComment]);
+        const commentId = await service.commentPost({id: Id, comment: newComment});
+        if(commentId) {
+          setComments(prev => [...prev, {Id: commentId, Comment: newComment, CommenterName: userData.Name, CommenterProfileImage: userData.CommenterProfileImage}]);
           setNewComment("");
         }
         else {
@@ -210,7 +211,7 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
           <Heart className={`h-4 w-4 ${liked ? "text-red-500 fill-red-500" : "text-muted-foreground"}`} />
           <span>{likesCount} likes</span>
           <span>•</span>
-          <span>{Comments.length} comments</span>
+          <span>{comments.length} comments</span>
         </div>
         
         <Separator />

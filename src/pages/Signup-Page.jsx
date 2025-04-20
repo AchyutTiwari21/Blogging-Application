@@ -21,7 +21,9 @@ function SignupPage() {
             const isUserCreated = await authService.createAccount(data);
             if(isUserCreated) {
                 const userData = await authService.getCurrentUser();
-                if(userData) dispatch(login(userData));
+                console.log(userData);
+                
+                if(userData) dispatch(login({userData}));
                 navigate("/blog");
             }
         } catch (error) {

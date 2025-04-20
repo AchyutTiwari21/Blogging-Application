@@ -164,11 +164,11 @@ export class Service{
             if(!response.ok) {
                 throw new Error(data.error || 'Error while commenting post.');
             } else {
-                return true;
+                return data.commentId;
             }
         } catch (error) {
             console.log("Backend api service :: commentPost :: error ", error);
-            return false;
+            throw error;
         }
     }
 }

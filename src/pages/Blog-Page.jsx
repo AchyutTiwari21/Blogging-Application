@@ -99,9 +99,6 @@ function BlogPage() {
     return (
       <div className="w-full min-h-screen flex justify-center items-center">
         Loading...
-        {
-          console.log("Inside Loading...", blogPosts)
-        }
       </div>
     )
   }
@@ -123,10 +120,6 @@ function BlogPage() {
         )}
         </div>
       </div>
-      {
-          console.log("Inside Blog Page...", blogPosts)
-      }
-      
     </div>
   );
 }
