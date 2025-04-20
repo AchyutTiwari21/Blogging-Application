@@ -1,6 +1,4 @@
-import { Description } from "@radix-ui/react-dialog";
 import { createSlice } from "@reduxjs/toolkit";
-import { act } from "react";
 
 const initialState = {
     posts: []
@@ -34,14 +32,6 @@ const postSlice = createSlice({
             state.posts = state.posts.map(post => {
                 if(post.Id === action.payload.Id) {
                     return {...post, HasLiked: action.payload.HasLiked}
-                }
-                return post;
-            })
-        },
-        addComment: (state, action) => {
-            state.posts = state.posts.map(post => {
-                if (post.Id === action.payload.Id) {
-                    return { ...post, Comments : [...post.Comments, action.payload] };
                 }
                 return post;
             })

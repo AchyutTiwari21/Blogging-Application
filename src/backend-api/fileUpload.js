@@ -26,6 +26,7 @@ async function ImageUploader(image) {
 
     const data = await response.json();
     imageUrl = data.secure_url;
+    console.log(imageUrl);
     return imageUrl;
   } catch (error) {
     console.error('Error uploading image:', error);

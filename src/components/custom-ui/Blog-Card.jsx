@@ -55,8 +55,6 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
   const dispatch = useDispatch();
 
   const userData = useSelector((state) => state.auth.userData);
-  console.log(userData);
-  
 
   const handleLike = async () => {
     if (liked) {
@@ -130,10 +128,6 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
     setIsShareOpen(false);
   };
 
-  const content = parse(Description);
-  const truncatedText = content.slice(0, 280);
-  const hasMoreContent = content.length > 280;
-
   return (
     <Card className="max-w-2xl w-full">
       <CardHeader className="flex justify-between space-y-0">
@@ -173,26 +167,8 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
       <CardContent className="space-y-4">
         <div className="relative">
           <p className="text-sm">
-            {isExpanded ? content : truncatedText}
-            {hasMoreContent && !isExpanded && "..."}
+            {parse(Description)}
           </p>
-          {hasMoreContent && (
-            <Button
-              variant="ghost"
-              className="text-primary hover:text-primary/80 p-0 h-auto font-medium"
-              onClick={() => setIsExpanded(!isExpanded)}
-            >
-              {isExpanded ? (
-                <span className="flex items-center">
-                  Show less <ChevronUp className="ml-1 h-4 w-4" />
-                </span>
-              ) : (
-                <span className="flex items-center">
-                  Show more <ChevronDown className="ml-1 h-4 w-4" />
-                </span>
-              )}
-            </Button>
-          )}
         </div>
         {FeaturedImage && (
           <div>
@@ -331,7 +307,7 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
             </div>
           </DialogHeader>
           <div className="space-y-6">
-            <p className="text-base leading-relaxed">{content}</p>
+            <p className="text-base leading-relaxed">{parse(Description)}</p>
               {FeaturedImage && <div>
                   <img
                     src={FeaturedImage}
