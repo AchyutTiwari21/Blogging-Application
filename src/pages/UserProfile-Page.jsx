@@ -30,20 +30,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { useSelector, useDispatch } from "react-redux";
+import authService from "@/backend-api/auth";
+import {updateUser} from "../store/features/authSlice";
+import ImageUploader from "@/backend-api/fileUpload";
 
-export default function UserProfilePage({ initialData }) {
+export default function UserProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
-  const [userData, setUserData] = useState(initialData || {
-    name: "John Doe",
-    designation: "Software Engineer",
-    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80",
-  });
-  const [tempUserData, setTempUserData] = useState(userData);
   const [isHoveringPhoto, setIsHoveringPhoto] = useState(false);
   const fileInputRef = useRef(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [isEditingBlog, setIsEditingBlog] = useState(false);
+ 
+
+  const dispatch = useDispatch();
+
+  const userData = useSelector((state) => state.auth.userData);
+
+  const [profileImage, setProfileImage] = useState(userData?.ProfileImage || null);
+  const [designation, setDesignation] = useState(userData?.Designation || null);
 
   // Sample user blogs
   const [userBlogs, setUserBlogs] = useState([
@@ -63,24 +69,39 @@ export default function UserProfilePage({ initialData }) {
     },
   ]);
 
-  const handlePhotoUpload = (event) => {
+  const handlePhotoUpload = async(event) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setTempUserData({ ...tempUserData, photo: reader.result});
-      };
-      reader.readAsDataURL(file);
+    if (!file) {
+      return;
+    }
+    try {
+      const imageUrl = await ImageUploader(file);
+      
+      if (imageUrl) {
+        setProfileImage(imageUrl);
+      } 
+    } catch (error) {
+      console.log("Upload Image Error: ", error.message);
+      return;
     }
   };
 
-  const handleSave = () => {
-    setUserData(tempUserData);
+  const handleSave = async() => {
+    try {
+      const userDetails = await authService.updateUserDetails({profileImage, designation});
+      if(userDetails) {
+        dispatch(updateUser({ProfileImage: profileImage, Designation: designation}));
+      } else {
+        throw new Error("Error while saving the post.")
+      }
+    } catch (error) {
+      console.log("Error while saving the post." || error.message);
+      return;
+    }
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setTempUserData(userData);
     setIsEditing(false);
   };
 
@@ -127,7 +148,7 @@ export default function UserProfilePage({ initialData }) {
               onMouseLeave={() => setIsHoveringPhoto(false)}
             >
               <Avatar className="h-32 w-32">
-                <AvatarImage src={userData.photo} alt={userData.name} />
+                <AvatarImage src={userData.ProfileImage} alt={userData.Name} />
                 <AvatarFallback>
                   <User className="h-16 w-16" />
                 </AvatarFallback>
@@ -139,8 +160,8 @@ export default function UserProfilePage({ initialData }) {
               )}
             </div>
             <div className="mt-4 text-center">
-              <h2 className="text-2xl font-bold">{userData.name}</h2>
-              <p className="text-muted-foreground">{userData.designation}</p>
+              <h2 className="text-2xl font-bold">{userData.Name}</h2>
+              <p className="text-muted-foreground">{userData.Designation}</p>
             </div>
           </div>
         </CardContent>
@@ -219,8 +240,8 @@ export default function UserProfilePage({ initialData }) {
               <div className="relative">
                 <Avatar className="h-32 w-32">
                   <AvatarImage
-                    src={tempUserData.photo}
-                    alt={tempUserData.name}
+                    src={profileImage}
+                    alt={userData.Name}
                   />
                   <AvatarFallback>
                     <User className="h-16 w-16" />
@@ -243,29 +264,16 @@ export default function UserProfilePage({ initialData }) {
                 />
               </div>
             </div>
+          </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  value={tempUserData.name}
-                  onChange={(e) =>
-                    setTempUserData({ ...tempUserData, name: e.target.value })
-                  }
-                />
-              </div>
               <div className="space-y-2">
                 <Label htmlFor="designation">Designation</Label>
                 <Input
                   id="designation"
-                  value={tempUserData.designation}
-                  onChange={(e) =>
-                    setTempUserData({
-                      ...tempUserData,
-                      designation: e.target.value,
-                    })
-                  }
+                  value={designation}
+                  onChange={(e) => setDesignation(e.target.value)}
                 />
               </div>
             </div>

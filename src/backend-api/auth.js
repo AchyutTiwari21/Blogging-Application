@@ -87,6 +87,34 @@ export class AuthService {
             throw error;
         }
     }
+
+    async updateUserDetails({profileImage, designation}) {
+        try {
+            const response = await fetch('http://localhost/blog-api/update-user', {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                credentials: 'include', // Important to send cookies
+                body: JSON.stringify({
+                  profileImage,
+                  designation
+                }),
+              });
+
+            const data = await response.json();
+
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while creating Account.');
+            } else {
+                return data.user;
+            }   
+
+        } catch (error) {
+            console.log('Error while updating user.');
+            throw error;
+        }
+    }
 }
 
 const authService = new AuthService();
