@@ -46,7 +46,7 @@ export class Service{
         }
     }
 
-    async deletePost(id) {
+    async deletePost({id}) {
         try {
             const response = await fetch(`http://localhost/blog-api/delete-post/${id}`, {
                 method: 'DELETE',
@@ -78,8 +78,6 @@ export class Service{
             if(!response.ok) {
                 throw new Error(data.error || 'Error while fetching post.');
             } else {
-                console.log(data);
-                
                 return data.posts;
             }
         } catch (error) {
@@ -169,6 +167,26 @@ export class Service{
         } catch (error) {
             console.log("Backend api service :: commentPost :: error ", error);
             throw error;
+        }
+    }
+
+    async getUserPosts() {
+        try {
+            const response = await fetch('http://localhost/blog-api/user-posts', {
+                method: 'GET',
+                credentials: 'include'
+            });
+    
+            const data = await response.json();
+    
+            if(!response.ok) {
+                throw new Error(data.error || 'Error while fetching post.');
+            } else {
+                return data.posts;
+            }
+        } catch (error) {
+            console.log("Backend api service :: getUserPosts :: error ", error.message);
+            return false;
         }
     }
 }

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -34,6 +34,9 @@ import { useSelector, useDispatch } from "react-redux";
 import authService from "@/backend-api/auth";
 import {updateUser} from "../store/features/authSlice";
 import ImageUploader from "@/backend-api/fileUpload";
+import service from "@/backend-api/configuration";
+import parse from "html-react-parser";
+import { removePost } from "@/store/features/postSlice";
 
 export default function UserProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -42,14 +45,7 @@ export default function UserProfilePage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [isEditingBlog, setIsEditingBlog] = useState(false);
- 
-
-  const dispatch = useDispatch();
-
-  const userData = useSelector((state) => state.auth.userData);
-
-  const [profileImage, setProfileImage] = useState(userData?.ProfileImage || null);
-  const [designation, setDesignation] = useState(userData?.Designation || null);
+  const [loading, setLoading] = useState(true);
 
   // Sample user blogs
   const [userBlogs, setUserBlogs] = useState([
@@ -68,6 +64,26 @@ export default function UserProfilePage() {
       image: "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?auto=format&fit=crop&q=80",
     },
   ]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const blogs = await service.getUserPosts();
+        setUserBlogs(blogs);
+      } catch (error) {
+        console.log(error.message || "Error while fetching post.");
+      } finally {
+        setLoading(false);
+      }
+    })()
+  }, [userBlogs]);
+ 
+  const dispatch = useDispatch();
+
+  const userData = useSelector((state) => state.auth.userData);
+
+  const [profileImage, setProfileImage] = useState(userData?.ProfileImage || null);
+  const [designation, setDesignation] = useState(userData?.Designation || null);
 
   const handlePhotoUpload = async(event) => {
     const file = event.target.files?.[0];
@@ -105,11 +121,20 @@ export default function UserProfilePage() {
     setIsEditing(false);
   };
 
-  const handleDeleteBlog = () => {
+  const handleDeleteBlog = async () => {
     if (selectedBlog) {
-      setUserBlogs(userBlogs.filter(blog => blog.id !== selectedBlog.id));
-      setDeleteDialogOpen(false);
-      setSelectedBlog(null);
+      const id = selectedBlog.Id;
+      try {
+        const isRemoved = await service.deletePost({id});
+        if(isRemoved) {
+          dispatch(removePost({Id: id}));
+          setUserBlogs(userBlogs.filter(blog => blog.Id !== selectedBlog.Id));
+        }
+        setDeleteDialogOpen(false);
+        setSelectedBlog(null);
+      } catch (error) {
+        console.log(error.message || "Error while deleting the blog post.");
+      }
     }
   };
 
@@ -125,6 +150,14 @@ export default function UserProfilePage() {
     setIsEditingBlog(false);
     setSelectedBlog(null);
   };
+
+  if(loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        Loading...
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8 py-4 px-2">
@@ -181,22 +214,19 @@ export default function UserProfilePage() {
         <CardContent>
           <div className="space-y-6">
             {userBlogs.map((blog) => (
-              <div key={blog.id} className="flex gap-4 group">
-                {blog.image && (
+              <div key={blog.Id} className="flex gap-4 group">
+                {blog.FeaturedImage && (
                   <img
-                    src={blog.image}
-                    alt={blog.title}
+                    src={blog.FeaturedImage}
+                    alt={blog.Title}
                     className="w-32 h-24 object-cover rounded-md"
                   />
                 )}
                 <div className="flex-1">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="font-semibold">{blog.title}</h4>
-                      <p className="text-sm text-muted-foreground">{blog.excerpt}</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {new Date(blog.date).toLocaleDateString()}
-                      </p>
+                      <h4 className="font-semibold">{blog.Title}</h4>
+                      <p className="text-sm text-muted-foreground">{parse(blog.Description)}</p>
                     </div>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
