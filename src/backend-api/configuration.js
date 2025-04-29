@@ -86,7 +86,7 @@ export class Service{
         }
     }
 
-    async getSinglePost(id) {
+    async getSinglePost({id}) {
         try {
             const response = await fetch(`http://localhost/blog-api/post/${id}`, {
                 method: 'GET',

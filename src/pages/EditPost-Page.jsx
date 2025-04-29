@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import configService from "../backend-api/configuration.js";
+import PostForm from "@/components/custom-ui/Post-Form";
 import Container from "@/components/custom-ui/Container.jsx";
 
 const EditPostPage = () => {
@@ -8,20 +9,22 @@ const EditPostPage = () => {
     const { Id } = useParams();
     const navigate = useNavigate();
 
-    useEffect(async () => {
-        try {
-            if(Id) {
-                const blogPost = await configService.getSinglePost(id=Id);
-                if(blogPost) {
-                    setPost(blogPost);
+    useEffect(() => {
+        (async () => {
+            try {
+                if(Id) {
+                    const blogPost = await configService.getSinglePost({id: Id});
+                    if(blogPost) {
+                        setPost(blogPost);
+                    }
+                } else {
+                    navigate("/blog");
                 }
-            } else {
-                navigate("/blog");
+            } catch (error) {
+                console.log(error.message || "Error while fetching post");
+                return;
             }
-        } catch (error) {
-            console.log(error.message || "Error while fetching post");
-            return;
-        }
+        })()
     }, [Id, navigate]);
 
     return ( post ? (

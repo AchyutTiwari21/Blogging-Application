@@ -155,7 +155,7 @@ function PostForm({post}) {
               onClick={handleSubmit(onSubmit)}
               className="w-full cursor-pointer"
             >
-              Add Post
+              {post ? (<span>Edit Post</span>) : (<span>Add Post</span>)}
             </Button>
           </CardFooter>
         </Card>

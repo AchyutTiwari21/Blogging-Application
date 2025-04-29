@@ -37,6 +37,7 @@ import ImageUploader from "@/backend-api/fileUpload";
 import service from "@/backend-api/configuration";
 import parse from "html-react-parser";
 import { removePost } from "@/store/features/postSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function UserProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -44,7 +45,6 @@ export default function UserProfilePage() {
   const fileInputRef = useRef(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState(null);
-  const [isEditingBlog, setIsEditingBlog] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Sample user blogs
@@ -76,7 +76,7 @@ export default function UserProfilePage() {
         setLoading(false);
       }
     })()
-  }, [userBlogs]);
+  }, []);
  
   const dispatch = useDispatch();
 
@@ -84,6 +84,7 @@ export default function UserProfilePage() {
 
   const [profileImage, setProfileImage] = useState(userData?.ProfileImage || null);
   const [designation, setDesignation] = useState(userData?.Designation || null);
+  const navigate = useNavigate();
 
   const handlePhotoUpload = async(event) => {
     const file = event.target.files?.[0];
@@ -139,16 +140,8 @@ export default function UserProfilePage() {
   };
 
   const handleEditBlog = (blog) => {
-    setSelectedBlog(blog);
-    setIsEditingBlog(true);
-  };
-
-  const handleSaveBlog = (updatedBlog) => {
-    setUserBlogs(userBlogs.map(blog => 
-      blog.id === updatedBlog.id ? updatedBlog : blog
-    ));
-    setIsEditingBlog(false);
-    setSelectedBlog(null);
+    if(blog) navigate(`/edit-post/${blog.Id}`);
+    else navigate("/blog");
   };
 
   if(loading) {
@@ -314,45 +307,6 @@ export default function UserProfilePage() {
               Cancel
             </Button>
             <Button onClick={handleSave}>
-              Save Changes
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Blog Dialog */}
-      <Dialog open={isEditingBlog} onOpenChange={setIsEditingBlog}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Edit Blog Post</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                value={selectedBlog?.title}
-                onChange={(e) =>
-                  setSelectedBlog(prev => prev ? { ...prev, title: e.target.value } : null)
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="excerpt">Excerpt</Label>
-              <Input
-                id="excerpt"
-                value={selectedBlog?.excerpt}
-                onChange={(e) =>
-                  setSelectedBlog(prev => prev ? { ...prev, excerpt: e.target.value } : null)
-                }
-              />
-            </div>
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsEditingBlog(false)}>
-              Cancel
-            </Button>
-            <Button onClick={() => selectedBlog && handleSaveBlog(selectedBlog)}>
               Save Changes
             </Button>
           </div>
