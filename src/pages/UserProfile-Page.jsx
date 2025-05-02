@@ -37,7 +37,7 @@ import ImageUploader from "@/backend-api/fileUpload";
 import service from "@/backend-api/configuration";
 import parse from "html-react-parser";
 import { removePost } from "@/store/features/postSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function UserProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
@@ -198,10 +198,12 @@ export default function UserProfilePage() {
         <CardHeader>
           <div className="flex justify-between items-center">
             <h3 className="text-xl font-semibold">My Blog Posts</h3>
+            <Link to="/add-post">
             <Button>
               <Pencil className="h-4 w-4 mr-2" />
               New Post
             </Button>
+            </Link>
           </div>
         </CardHeader>
         <CardContent>
