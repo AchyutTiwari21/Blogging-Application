@@ -98,7 +98,7 @@ export function BlogCard({Id,Title, AuthorName, AuthorProfileImage, AuthorDesign
       try {
         const commentId = await service.commentPost({id: Id, comment: newComment});
         if(commentId) {
-          setComments(prev => [...prev, {Id: commentId, Comment: newComment, CommenterName: userData.Name, CommenterProfileImage: userData.CommenterProfileImage}]);
+          setComments(prev => [...prev, {Id: commentId, Comment: newComment, CommenterName: userData.Name, CommenterProfileImage: userData.ProfileImage}]);
           setNewComment("");
         }
         else {
@@ -182,7 +182,7 @@ export function BlogCard({Id,Title, AuthorName, AuthorProfileImage, AuthorDesign
             <img
               src={FeaturedImage}
               alt={`Blog content id: ${Id}`}
-              className="rounded-lg w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+              className="rounded-lg w-full h-84 cursor-pointer hover:opacity-90 transition-opacity"
               onClick={() => setIsFullPostOpen(true)}
             />
           </div>

@@ -111,7 +111,6 @@ function BlogPage() {
         <div className="flex flex-col items-center gap-8">
         {Array.isArray(blogPosts) && blogPosts.length > 0 ? (
           blogPosts
-            .filter((blog) => blog && typeof blog === 'object' && blog.Id !== undefined)
             .map((blog) => (
               <BlogCard key={blog.Id} {...blog} />
             ))
