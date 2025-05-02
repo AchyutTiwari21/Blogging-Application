@@ -41,7 +41,7 @@ import { likePost } from "@/store/features/postSlice";
 import parse from "html-react-parser";
 
 
-export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation, Description, FeaturedImage, Likes, Comments = [], HasLiked}) {
+export function BlogCard({Id,Title, AuthorName, AuthorProfileImage, AuthorDesignation, Description, FeaturedImage, Likes, Comments = [], HasLiked}) {
   const [liked, setLiked] = useState(HasLiked);
   const [likesCount, setLikesCount] = useState(Likes);
   const [isCommentOpen, setIsCommentOpen] = useState(false);
@@ -51,6 +51,12 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isFullPostOpen, setIsFullPostOpen] = useState(false);
   // const { toast } = useToast();
+
+  function truncateHTML(html, wordLimit) {
+    const text = html.replace(/<[^>]+>/g, ""); // Remove HTML tags
+    const words = text.split(/\s+/).slice(0, wordLimit); // Get first 50 words
+    return words.join(" ") + "...";
+  }
 
   const dispatch = useDispatch();
 
@@ -166,8 +172,9 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
 
       <CardContent className="space-y-4">
         <div className="relative">
+          <span className="w-full font-bold">{Title}</span>
           <p className="text-sm">
-            {parse(Description)}
+            {truncateHTML(Description, 50)}
           </p>
         </div>
         {FeaturedImage && (
@@ -307,6 +314,7 @@ export function BlogCard({Id, AuthorName, AuthorProfileImage, AuthorDesignation,
             </div>
           </DialogHeader>
           <div className="space-y-6">
+            <span className="w-full font-bold">{Title}</span>
             <p className="text-base leading-relaxed">{parse(Description)}</p>
               {FeaturedImage && <div>
                   <img
