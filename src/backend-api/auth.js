@@ -2,7 +2,7 @@ export class AuthService {
 
     async createAccount({email, password, name}) {
         try {
-            const response = await fetch("https://blog-api.kesug.com/blog-api/signup", {
+            const response = await fetch("https://blog-api.kesug.com/signup", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -28,7 +28,7 @@ export class AuthService {
       
     async login({email, password}) {
         try {
-            const response = await fetch("https://blog-api.kesug.com/blog-api/login", {
+            const response = await fetch("https://blog-api.kesug.com/login", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -53,7 +53,7 @@ export class AuthService {
 
     async getCurrentUser() {
         try {
-            const response = await fetch("https://blog-api.kesug.com/blog-api/user", {
+            const response = await fetch("https://blog-api.kesug.com/user", {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -72,7 +72,7 @@ export class AuthService {
 
     async logout() {
         try {
-            const response = await fetch("https://blog-api.kesug.com/blog-api/logout", {
+            const response = await fetch("https://blog-api.kesug.com/logout", {
                 method: 'POST',
                 credentials: 'include'
             });
@@ -90,7 +90,7 @@ export class AuthService {
 
     async updateUserDetails({profileImage, designation}) {
         try {
-            const response = await fetch('https://blog-api.kesug.com/blog-api/update-user', {
+            const response = await fetch('https://blog-api.kesug.com/update-user', {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',

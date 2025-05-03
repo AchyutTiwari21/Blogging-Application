@@ -2,7 +2,7 @@ export class Service{
 
     async createPost({title, description, featuredImage}) {
         try {
-            const response = await fetch("https://blog-api.kesug.com/blog-api/create-post", {
+            const response = await fetch("https://blog-api.kesug.com/create-post", {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -25,7 +25,7 @@ export class Service{
 
     async updatePost({id, title, description, featuredImage}) {
         try {
-            const response = await fetch(`https://blog-api.kesug.com/blog-api/update-post/${id}`, {
+            const response = await fetch(`https://blog-api.kesug.com/update-post/${id}`, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
@@ -48,7 +48,7 @@ export class Service{
 
     async deletePost({id}) {
         try {
-            const response = await fetch(`https://blog-api.kesug.com/blog-api/delete-post/${id}`, {
+            const response = await fetch(`https://blog-api.kesug.com/blog-api/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
             });
@@ -68,7 +68,7 @@ export class Service{
 
     async getPosts() {
         try {
-            const response = await fetch("https://blog-api.kesug.com/blog-api/posts", {
+            const response = await fetch("https://blog-api.kesug.com/posts", {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -88,7 +88,7 @@ export class Service{
 
     async getSinglePost({id}) {
         try {
-            const response = await fetch(`https://blog-api.kesug.com/blog-api/post/${id}`, {
+            const response = await fetch(`https://blog-api.kesug.com/post/${id}`, {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -108,7 +108,7 @@ export class Service{
 
     async likePost({id}) {
         try {
-            const response = await fetch(`https://blog-api.kesug.com/blog-api/like-post/${id}`, {
+            const response = await fetch(`https://blog-api.kesug.com/like-post/${id}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -128,7 +128,7 @@ export class Service{
 
     async unlikePost({id}) {
         try {
-            const response = await fetch(`https://blog-api.kesug.com/blog-api/unlike-post/${id}`, {
+            const response = await fetch(`https://blog-api.kesug.com/unlike-post/${id}`, {
                 method: 'POST',
                 credentials: 'include',
             });
@@ -148,7 +148,7 @@ export class Service{
 
     async commentPost({id, comment}) {
         try {
-            const response = await fetch(`https://blog-api.kesug.com/blog-api/comment-post/${id}`, {
+            const response = await fetch(`https://blog-api.kesug.com/comment-post/${id}`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -172,7 +172,7 @@ export class Service{
 
     async getUserPosts() {
         try {
-            const response = await fetch('https://blog-api.kesug.com/blog-api/user-posts', {
+            const response = await fetch('https://blog-api.kesug.com/user-posts', {
                 method: 'GET',
                 credentials: 'include'
             });
